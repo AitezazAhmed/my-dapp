@@ -16,35 +16,28 @@ export default function App() {
   const [amount, setAmount] = useState("");
 
   // 🔌 CONNECT WALLET
-const connectWallet = async () => {
-  try {
-    if (!window.ethereum) {
-      alert("Open in Trust Wallet / MetaMask");
-      return;
+  const connectWallet = async () => {
+    try {
+      if (!window.ethereum) {
+        alert("Open in Trust Wallet / MetaMask browser");
+        return;
+      }
+
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+
+      const s = await provider.getSigner();
+      const address = await s.getAddress();
+
+      setSigner(s);
+      setWallet(address);
+
+      alert("Wallet Connected ✔");
+    } catch (err) {
+      console.log(err);
+      alert("Connection failed");
     }
-
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-
-    // 🔥 CHECK NETWORK (BSC = 56)
-    const network = await provider.getNetwork();
-    if (network.chainId !== 56n) {
-      alert("Please switch to BSC Network");
-      return;
-    }
-
-    const s = await provider.getSigner();
-    const address = await s.getAddress();
-
-    setSigner(s);
-    setWallet(address);
-
-    alert("Wallet Connected ✔");
-  } catch (err) {
-    console.log(err);
-    alert("Connection failed");
-  }
-};
+  };
 
   // 💰 SEND USDT
   const pay = async () => {

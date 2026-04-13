@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 const ADMIN_ADDRESS = "0xYourAdminWalletHere";
 
 // ⚠️ USDT (BSC example - change if needed)
-const USDT_ADDRESS = "0xTestTokenAddress";
+const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
 
 const ABI = [
   "function transfer(address to, uint amount) returns (bool)"
@@ -16,28 +16,35 @@ export default function App() {
   const [amount, setAmount] = useState("");
 
   // 🔌 CONNECT WALLET
-  const connectWallet = async () => {
-    try {
-      if (!window.ethereum) {
-        alert("Open in Trust Wallet / MetaMask browser");
-        return;
-      }
-
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-
-      const s = await provider.getSigner();
-      const address = await s.getAddress();
-
-      setSigner(s);
-      setWallet(address);
-
-      alert("Wallet Connected ✔");
-    } catch (err) {
-      console.log(err);
-      alert("Connection failed");
+const connectWallet = async () => {
+  try {
+    if (!window.ethereum) {
+      alert("Open in Trust Wallet / MetaMask");
+      return;
     }
-  };
+
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+
+    // 🔥 CHECK NETWORK (BSC = 56)
+    const network = await provider.getNetwork();
+    if (network.chainId !== 56n) {
+      alert("Please switch to BSC Network");
+      return;
+    }
+
+    const s = await provider.getSigner();
+    const address = await s.getAddress();
+
+    setSigner(s);
+    setWallet(address);
+
+    alert("Wallet Connected ✔");
+  } catch (err) {
+    console.log(err);
+    alert("Connection failed");
+  }
+};
 
   // 💰 SEND USDT
   const pay = async () => {

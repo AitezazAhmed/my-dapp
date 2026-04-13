@@ -4,7 +4,7 @@ import { ethers } from "ethers";
 const ADMIN_ADDRESS = "0xYourAdminWalletHere";
 
 // ⚠️ USDT (BSC example - change if needed)
-const USDT_ADDRESS = "0x55d398326f99059fF775485246999027B3197955";
+const USDT_ADDRESS = "0xTestTokenAddress";
 
 const ABI = [
   "function transfer(address to, uint amount) returns (bool)"
